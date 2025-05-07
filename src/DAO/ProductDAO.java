@@ -64,7 +64,7 @@ public class ProductDAO {
     }
     
     public static boolean updateProduct(Product p){
-        String sql = "UPDATE Products SET name = ?, category = ?, import_price = ?, sell_price = ?, expiry_date = ? WHERE id = ? ";
+        String sql = "UPDATE Products SET name = ?, category = ?, import_price = ?, sell_price = ?, quantity = ? , expiry_date = ? WHERE id = ? ";
         
         try (Connection conn = DBUtils.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -75,6 +75,8 @@ public class ProductDAO {
             ps.setInt(5, p.getQuantity());
             ps.setString(6, p.getExpiryDate());
             ps.setInt(7, p.getId());
+            
+            return ps.executeUpdate() > 0;
         } catch (Exception e) {
             System.out.println("Loi updateProduct: " + e.getMessage());
         }
@@ -90,6 +92,66 @@ public class ProductDAO {
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
             System.out.println("Loi deleteProduct: " + e.getMessage());
+        }
+        return false;
+    }
+    
+    public static List<Product> searchProduct(String keyword){
+        List<Product> list = new ArrayList<>();
+        String sql = "SELECT * FROM Products WHERE name LIKE ? OR category LIKE ?";
+        
+        try (Connection conn = DBUtils.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, "%" + keyword + "%");
+            ps.setString(2, "%" + keyword + "%");
+            
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                Product p = new Product();
+                p.setId(rs.getInt("id"));
+                p.setName(rs.getString("name"));
+                p.setCategory(rs.getString("category"));
+                p.setImportPrice(rs.getDouble("import_price"));
+                p.setSellPrice(rs.getDouble("sell_price"));
+                p.setQuantity(rs.getInt("quantity"));
+                p.setExpiryDate(rs.getString("expiry_date"));
+                
+                list.add(p);
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    
+    /////////////////////////////////////////////////////////////////////////////////////////
+    
+    
+    public static boolean increaseQuantity(int productId, int addQty){
+        String sql = "UPDATE Products SET quantity = quantity + ? WHERE id = ?";
+        try (Connection conn = DBUtils.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, addQty);
+            ps.setInt(2, productId);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            System.out.println("Loi cap nhat so luong: " + e.getMessage());
+        }
+        return false;
+    }
+    
+    public static boolean insertImportHistory(int productId, int qty, String supplier){
+        String sql = "INSERT INTO ImportHistory(product_id, quantity, import_date, supplier) VALUES (?, ?, GETDATE(), ?)";
+        try (Connection conn = DBUtils.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, productId);
+            ps.setInt(2, qty);
+            ps.setString(3, supplier);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            System.out.println("Loi ghi nhap hang: " + e.getMessage());
         }
         return false;
     }
