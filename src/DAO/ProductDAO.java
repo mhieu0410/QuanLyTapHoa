@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package DAO;
+
 
 import DTO.ImportRecord;
 import DTO.Product;
@@ -157,6 +157,7 @@ public class ProductDAO {
         }
         return false;
     }
+
     
     /////////////////////////////////////////////////////////////////////////////////////////////////
     
@@ -218,4 +219,5 @@ public class ProductDAO {
         return list;
     }
     
+
 }
