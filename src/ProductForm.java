@@ -1,6 +1,7 @@
 
 import DAO.ProductDAO;
 import DTO.Product;
+import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -75,6 +76,8 @@ public class ProductForm extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        txtSearch = new javax.swing.JTextField();
+        btnSearch = new javax.swing.JButton();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -145,6 +148,11 @@ public class ProductForm extends javax.swing.JFrame {
             }
         )
     );
+    tblProducts.addMouseListener(new java.awt.event.MouseAdapter() {
+        public void mouseClicked(java.awt.event.MouseEvent evt) {
+            tblProductsMouseClicked(evt);
+        }
+    });
     jScrollPane3.setViewportView(tblProducts);
 
     jButton1.setText("btnadd");
@@ -162,8 +170,32 @@ public class ProductForm extends javax.swing.JFrame {
     });
 
     jButton3.setText("btndelete");
+    jButton3.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            jButton3ActionPerformed(evt);
+        }
+    });
 
     jButton4.setText("btnedit");
+    jButton4.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            jButton4ActionPerformed(evt);
+        }
+    });
+
+    txtSearch.setText("jTextField1");
+    txtSearch.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            txtSearchActionPerformed(evt);
+        }
+    });
+
+    btnSearch.setText("jButton5");
+    btnSearch.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            btnSearchActionPerformed(evt);
+        }
+    });
 
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
     getContentPane().setLayout(layout);
@@ -177,7 +209,7 @@ public class ProductForm extends javax.swing.JFrame {
             .addComponent(jButton3)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
             .addComponent(jButton4)
-            .addGap(0, 0, Short.MAX_VALUE))
+            .addGap(0, 82, Short.MAX_VALUE))
         .addGroup(layout.createSequentialGroup()
             .addContainerGap()
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -205,7 +237,15 @@ public class ProductForm extends javax.swing.JFrame {
                     .addComponent(jLabel1)
                     .addGap(59, 59, 59)
                     .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-            .addContainerGap(217, Short.MAX_VALUE))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(58, 58, 58)
+                    .addComponent(btnSearch)
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
     );
     layout.setVerticalGroup(
@@ -214,11 +254,13 @@ public class ProductForm extends javax.swing.JFrame {
             .addGap(28, 28, 28)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                 .addComponent(jLabel1)
-                .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                 .addComponent(jLabel2)
-                .addComponent(txtCategory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(txtCategory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnSearch))
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                 .addComponent(jLabel3)
@@ -250,7 +292,14 @@ public class ProductForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
+        txtName.setText("");
+        txtCategory.setText("");
+        txtImportPrice.setText("");
+        txtSellPrice.setText("");
+        txtQuantity.setText("");
+        txtExpiryDate.setText("");
+        
+        tblProducts.clearSelection();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -303,6 +352,99 @@ public class ProductForm extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtSellPriceActionPerformed
 
+    private void tblProductsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblProductsMouseClicked
+        int row = tblProducts.getSelectedRow();
+        if(row >= 0){
+            txtName.setText(tblProducts.getValueAt(row, 1).toString());
+            txtCategory.setText(tblProducts.getValueAt(row, 2).toString());
+            txtImportPrice.setText(tblProducts.getValueAt(row, 3).toString());
+            txtSellPrice.setText(tblProducts.getValueAt(row, 4).toString());
+            txtQuantity.setText(tblProducts.getValueAt(row, 5).toString());
+            txtExpiryDate.setText(tblProducts.getValueAt(row, 6).toString());
+        }
+    }//GEN-LAST:event_tblProductsMouseClicked
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        int row = tblProducts.getSelectedRow();
+        if(row >= 0){
+            int id = Integer.parseInt(tblProducts.getValueAt(row, 0).toString());
+            int confirm = JOptionPane.showConfirmDialog(this, "Ban co chac chan muon xoa san pham nay?", "xac nhan", JOptionPane.YES_NO_OPTION);
+            if(confirm == JOptionPane.YES_OPTION){
+                if(ProductDAO.deleteProduct(id)){
+                    JOptionPane.showMessageDialog(this, "Xoa thanh Cong");
+                    
+                    loadTable();
+                    
+                jButton2ActionPerformed(null); 
+                } else {
+                    JOptionPane.showMessageDialog(this, "Xoa that bai");
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Vui long chon san phan can xoa!");
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        int row = tblProducts.getSelectedRow();
+        if(row >= 0){
+            try {
+                Product p = new Product();
+                p.setId(Integer.parseInt(tblProducts.getValueAt(row, 0).toString()));
+                p.setName(txtName.getText());
+                p.setCategory(txtCategory.getText());
+                p.setImportPrice(Double.parseDouble(txtImportPrice.getText()));
+                p.setSellPrice(Double.parseDouble(txtSellPrice.getText()));
+                p.setQuantity(Integer.parseInt(txtQuantity.getText()));
+                
+                // xu ly dinh dang ngay nhap vao
+                String dataStr = txtExpiryDate.getText().trim();
+                try {
+                    java.sql.Date expiryDate = java.sql.Date.valueOf(dataStr);
+                    p.setExpiryDate(dataStr);
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this, "Ngay het han khong hop le (yyyy-mm-dd)");
+                }
+                
+                if(ProductDAO.updateProduct(p)){
+                    JOptionPane.showMessageDialog(this, "Cap Nhat Thanh Cong");
+                    loadTable();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Cap Nhat That Bai.");
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Loi: " + e.getMessage());
+            }
+        } else {
+            JOptionPane.showMessageDialog(this , "Vui long chon san pham de sua");
+        }
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
+        // TODO add you
+    }//GEN-LAST:event_txtSearchActionPerformed
+
+    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
+        String keyword = txtSearch.getText().trim();
+        List<Product> result = ProductDAO.searchProduct(keyword);
+        
+        // hien thi ket qua len bang
+        DefaultTableModel model = (DefaultTableModel) tblProducts.getModel();
+        model.setRowCount(0); // xoa du lieu
+        
+        for(Product p : result){
+            model.addRow(new Object[]{
+                p.getId(),
+                p.getName(),
+                p.getCategory(),
+                p.getImportPrice(),
+                p.getSellPrice(),
+                p.getQuantity(),
+                p.getExpiryDate()
+            });
+        }
+    }//GEN-LAST:event_btnSearchActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -339,6 +481,7 @@ public class ProductForm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnSearch;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -360,6 +503,7 @@ public class ProductForm extends javax.swing.JFrame {
     private javax.swing.JTextField txtImportPrice;
     private javax.swing.JTextField txtName;
     private javax.swing.JTextField txtQuantity;
+    private javax.swing.JTextField txtSearch;
     private javax.swing.JTextField txtSellPrice;
     // End of variables declaration//GEN-END:variables
 }

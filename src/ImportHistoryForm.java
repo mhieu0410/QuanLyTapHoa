@@ -1,0 +1,199 @@
+
+import DAO.ProductDAO;
+import DTO.ImportRecord;
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.FileWriter;
+import java.sql.Date;
+import java.util.List;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
+import javax.swing.JTable;
+import javax.swing.SpinnerDateModel;
+import javax.swing.table.DefaultTableModel;
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ *
+ * @author admin
+ */
+public class ImportHistoryForm extends javax.swing.JFrame {
+    private JTable tblHistory;
+    private DefaultTableModel model;
+    private JSpinner dateFrom, dateTo;
+    private JButton btnFilter, btnExport;
+
+    /**
+     * Creates new form ImportHistoryForm
+     */
+    public ImportHistoryForm() {
+        initUpdateComponents();
+        loadHistory(null, null);
+    }
+    
+    private void initUpdateComponents(){
+        setTitle("Lich su Nhap hang");
+        setSize(800, 500);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLayout(new BorderLayout());
+        
+        //// Top filter panel
+        JPanel fillterPanel = new JPanel();
+        fillterPanel.add(new JLabel("Tu ngay: "));
+        dateFrom = new JSpinner(new SpinnerDateModel());
+        dateFrom.setEditor(new JSpinner.DateEditor(dateFrom, "yyyy-MM-dd"));
+        fillterPanel.add(dateFrom);
+        
+        fillterPanel.add(new JLabel("Den ngay: "));
+        dateTo = new JSpinner(new SpinnerDateModel());
+        dateTo.setEditor((new JSpinner.DateEditor(dateTo, "yyyy-MM-dd")));
+        fillterPanel.add(dateTo);
+        
+        btnFilter = new JButton("Loc");
+        fillterPanel.add(btnFilter);
+        
+        btnExport = new JButton("Xuat excel");
+        fillterPanel.add(btnExport);
+        
+        btnFilter.addActionListener((ActionEvent e) -> {
+            Date from = new Date(((java.util.Date) dateFrom.getValue()).getTime());
+            Date to = new Date(((java.util.Date) dateTo.getValue()).getTime());
+            loadHistory(from, to);
+        });
+        
+        btnExport.addActionListener((ActionEvent e) -> {
+            exportToExcel();
+        });
+        add(fillterPanel, BorderLayout.NORTH);
+        
+        // table
+        tblHistory = new JTable();
+        model = new DefaultTableModel();
+        model.setColumnIdentifiers(new String[] {
+            "ID", "ten san pham", "so luong", "nha cung cap", "ngay nhap"
+        });
+        tblHistory.setModel(model);
+        
+        JScrollPane scrollPane = new JScrollPane(tblHistory);
+        add(scrollPane, BorderLayout.CENTER);
+    }
+    
+    private void loadHistory(Date from, Date to){
+        model.setRowCount(0);
+        List<ImportRecord> list = ProductDAO.getImportHistory(from, to);
+        for(ImportRecord r : list){
+            model.addRow(new Object[]{
+                r.getId(),
+                r.getProductName(),
+                r.getQuantity(),
+                r.getSupplier(),
+                r.getImportDate()
+            });
+        }
+    }
+    
+    private void exportToExcel(){
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Chon noi luu file CSV");
+        int userSelection = fileChooser.showSaveDialog(this);
+        
+        if(userSelection == JFileChooser.APPROVE_OPTION){
+            File fileToSave = fileChooser.getSelectedFile();
+            if(!fileToSave.getAbsolutePath().endsWith(".scv")){
+                fileToSave = new File(fileToSave.getAbsolutePath() + ".csv");
+            }
+            
+            try (FileWriter fw = new FileWriter(fileToSave)){
+                for(int i = 0; i< model.getColumnCount(); i++){
+                    fw.write(model.getColumnName(i) + ",");
+                }
+                fw.write("\n");
+                for(int row = 0; row < model.getRowCount(); row++){
+                    for(int col = 0; col < model.getColumnCount(); col++){
+                        fw.write(model.getValueAt(row, col).toString() + ",");
+                    }
+                    fw.write("\n");
+                }
+                fw.flush();
+                JOptionPane.showMessageDialog(this, "Xuat file thanh cong: " + fileToSave.getAbsolutePath());
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "loi khi xuat file: " + e.getMessage());
+            }
+        }
+    }
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 400, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 300, Short.MAX_VALUE)
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(ImportHistoryForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(ImportHistoryForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(ImportHistoryForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(ImportHistoryForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new ImportHistoryForm().setVisible(true);
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // End of variables declaration//GEN-END:variables
+}
