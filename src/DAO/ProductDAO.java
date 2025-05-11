@@ -3,8 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package DAO;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> be0681c2b4706cfc27a327cbc1f2b6526ed1977d
 import DTO.ImportRecord;
 import DTO.Product;
 import java.sql.Connection;
@@ -157,6 +160,10 @@ public class ProductDAO {
         }
         return false;
     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> be0681c2b4706cfc27a327cbc1f2b6526ed1977d
     
     /////////////////////////////////////////////////////////////////////////////////////////////////
     
@@ -218,6 +225,7 @@ public class ProductDAO {
         return list;
     }
     
+<<<<<<< HEAD
     ///////////////////////////////////////////////////////////////////////////////
     
     public static boolean sellProduct(int productId, int quantity){
@@ -260,4 +268,7 @@ public static Product findProductById(int productId) {
 }
 
     
+=======
+
+>>>>>>> be0681c2b4706cfc27a327cbc1f2b6526ed1977d
 }
